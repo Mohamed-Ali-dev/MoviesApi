@@ -1,19 +1,23 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MoviesApi.Data;
+using MoviesApi.Repository.Interfaces;
 
 namespace MoviesApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GenreController(ILogger<GenreController> logger) : ControllerBase
+    public class GenreController(ILogger<GenreController> logger, IUnitOfWork unitOfWork) : ControllerBase
     {
         private readonly ILogger<GenreController> logger = logger;
+        private readonly IUnitOfWork unitOfWork = unitOfWork;
 
         [HttpGet]
-        public IActionResult Get()
+        public async Task<IActionResult> Get()
         {
-            throw new NotImplementedException();
-
+            logger.LogInformation("Getting all the genres");
+            var gners = await unitOfWork.Genre.GetAll();
+            return Ok(gners);
         }
         [HttpGet("{id}")]
         public IActionResult GetById(int id)

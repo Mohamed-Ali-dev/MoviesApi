@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using MoviesApi.Data;
 using MoviesApi.Filter;
+using MoviesApi.Repository.Implementation;
+using MoviesApi.Repository.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +21,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseSqlServer(connectionString);
 });
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 //builder.Services.AddCors();
 
 var app = builder.Build();
