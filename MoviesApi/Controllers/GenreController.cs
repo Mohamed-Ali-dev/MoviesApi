@@ -5,6 +5,7 @@ using MoviesApi.Data;
 using MoviesApi.DTOs;
 using MoviesApi.DTOs.Genre;
 using MoviesApi.Entities;
+using MoviesApi.Helpers;
 using MoviesApi.Repository.Interfaces;
 
 namespace MoviesApi.Controllers
@@ -19,11 +20,10 @@ namespace MoviesApi.Controllers
         private readonly IMapper mapper = mapper;
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get([FromQuery] PaginationDTO paginationDTO)
         {
-            logger.LogInformation("Getting all the genres");
-            var genres = await unitOfWork.Genre.GetAll();
-            var genresDTO = mapper.Map<IEnumerable<Genre>>(genres);
+            var genres = await unitOfWork.Genre.GetAll(paginationDTO);
+            var genresDTO = mapper.Map<IEnumerable<GenreDTO>>(genres);
             return Ok(genresDTO);
         }
         [HttpGet("{id}")]
@@ -39,7 +39,7 @@ namespace MoviesApi.Controllers
         [HttpPost("addGenre")]
         public async Task<IActionResult> Post([FromBody] CreateGenreDTO genreDTO)
         {
-            var genre = 
+            var genre = mapper.Map<Genre>(genreDTO);
            await unitOfWork.Genre.CreatedAsync(genre);
             await unitOfWork.SaveAsync();
             return NoContent();

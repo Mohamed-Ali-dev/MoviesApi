@@ -1,10 +1,11 @@
-﻿using System.Linq.Expressions;
+﻿using MoviesApi.DTOs;
+using System.Linq.Expressions;
 
 namespace MoviesApi.Repository.Interfaces
 {
     public interface IRepository<T> where T : class
     {
-        Task<IEnumerable<T>> GetAll(Expression<Func<T,bool>>? filter = null, string[]? includeProperties = null
+        Task<IEnumerable<T>> GetAll(PaginationDTO paginationDTO, Expression<Func<T,bool>>? filter = null, string[]? includeProperties = null
             , Expression<Func<T,bool>>? orderBy = null, bool? isDescending = false);
         Task<T> GetAsync(Expression<Func<T, bool>> filter, string[]? includeProperties = null, bool tracked = false);
         Task<bool> ObjectExistAsync(Expression<Func<T, bool>> filter);

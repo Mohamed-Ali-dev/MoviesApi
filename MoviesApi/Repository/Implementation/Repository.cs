@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MoviesApi.Data;
+using MoviesApi.DTOs;
+using MoviesApi.Helpers;
 using MoviesApi.Repository.Interfaces;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -16,7 +18,7 @@ namespace MoviesApi.Repository.Implementation
             this._db = db;
             this.dbSet = _db.Set<T>();
         }
-        public async Task<IEnumerable<T>> GetAll(Expression<Func<T, bool>>? filter = null, string[]? includeProperties = null, Expression<Func<T, bool>>? orderBy = null, bool? isDescending = false)
+        public async Task<IEnumerable<T>> GetAll(PaginationDTO paginationDTO, Expression<Func<T, bool>>? filter = null, string[]? includeProperties = null, Expression<Func<T, bool>>? orderBy = null, bool? isDescending = false)
         {
             IQueryable<T> query = dbSet;
             if(filter != null)
@@ -34,7 +36,7 @@ namespace MoviesApi.Repository.Implementation
                     query = query.Include(IncludeProp);
                 }
             }
-            return await query.ToListAsync();
+            return await query.Paginate(paginationDTO).ToListAsync();
         }
         public async Task<T> GetAsync(Expression<Func<T, bool>> filter, string[]? includeProperties = null, bool tracked = false)
         {
