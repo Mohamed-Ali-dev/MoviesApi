@@ -27,41 +27,52 @@ namespace MoviesApi.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            if(!(unitOfWork.Genre.ObjectExistAsync(u => u.Id == id).GetAwaiter().GetResult()))
+            var genre = await unitOfWork.Genre.GetAsync(u => u.Id == id);
+
+            if (genre == null)
             {
                 return NotFound("Genre not found");
             }
-            var genre = await unitOfWork.Genre.GetAsync(u => u.Id == id);
-            return Ok(genre);
+            var genreDTO = mapper.Map<GenreDTO>(genre);
+            return Ok(genreDTO);
         }
         [HttpPost("addGenre")]
         public async Task<IActionResult> Post([FromBody] CreateGenreDTO genreDTO)
         {
             var genre = mapper.Map<Genre>(genreDTO);
-           await unitOfWork.Genre.CreatedAsync(genre);
+            if(!(unitOfWork.Genre.ObjectExistAsync(u =>u.Name == genreDTO.Name).GetAwaiter().GetResult()))
+            {
+                return BadRequest("Genre is already exist");
+            }
+            await unitOfWork.Genre.CreatedAsync(genre);
             await unitOfWork.SaveAsync();
             return NoContent();
         }
         [HttpPut("updateGenre")]
-        public async Task<IActionResult> Put([FromBody] Genre genre)
+        public async Task<IActionResult> Put(int id, [FromBody] CreateGenreDTO genreDTO)
         {
-            if (!(unitOfWork.Genre.ObjectExistAsync(u => u.Id == genre.Id).GetAwaiter().GetResult()))
+             var genre = await unitOfWork.Genre.GetAsync(u => u.Id == id, tracked : true);
+            if (!(unitOfWork.Genre.ObjectExistAsync(u => u.Name == genreDTO.Name).GetAwaiter().GetResult()))
+            {
+                return BadRequest("Genre is already exist");
+            }
+            if (genre == null)
             {
                 return NotFound("Genre not found");
             }
-             unitOfWork.Genre.Update(genre);
+            genre = mapper.Map(genreDTO, genre);
             await unitOfWork.SaveAsync();
             return NoContent();
         }
-        [HttpDelete("delete{id}")]
+        [HttpDelete("delete{id:int}")]
         public async Task<IActionResult> Delete(int id)
         {
-            if (!(unitOfWork.Genre.ObjectExistAsync(u => u.Id == id).GetAwaiter().GetResult()))
+            var genreToBeDeleted = await unitOfWork.Genre.GetAsync(u => u.Id == id);
+
+            if (genreToBeDeleted == null)
             {
                 return NotFound("Genre not found");
             }
-            var genreToBeDeleted = await unitOfWork.Genre.GetAsync(u => u.Id == id);
-
             unitOfWork.Genre.Delete(genreToBeDeleted);
             await unitOfWork.SaveAsync();
             return NoContent(); 
