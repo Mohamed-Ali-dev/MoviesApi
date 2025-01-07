@@ -9,11 +9,11 @@
         {
             get
             {
-                return PageSize;
+                return pageSize;
             }
             set
             {
-                PageSize = (value > maxPageSize ? maxPageSize : value);
+                pageSize = (value > maxPageSize ? maxPageSize : value);
             }
         }
 

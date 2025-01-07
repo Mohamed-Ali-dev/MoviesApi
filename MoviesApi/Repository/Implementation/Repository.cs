@@ -4,6 +4,7 @@ using MoviesApi.DTOs;
 using MoviesApi.Helpers;
 using MoviesApi.Repository.Interfaces;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 
 namespace MoviesApi.Repository.Implementation
@@ -36,7 +37,8 @@ namespace MoviesApi.Repository.Implementation
                     query = query.Include(IncludeProp);
                 }
             }
-            return await query.Paginate(paginationDTO).ToListAsync();
+            return await query.Skip((paginationDTO.Page - 1) * paginationDTO.PageSize).
+               Take(paginationDTO.PageSize).ToListAsync();
         }
         public async Task<T> GetAsync(Expression<Func<T, bool>> filter, string[]? includeProperties = null, bool tracked = false)
         {

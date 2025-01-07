@@ -12,10 +12,8 @@ namespace MoviesApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GenreController(ILogger<GenreController> logger,
-        IUnitOfWork unitOfWork, IMapper mapper) : ControllerBase
+    public class GenreController(IUnitOfWork unitOfWork, IMapper mapper) : ControllerBase
     {
-        private readonly ILogger<GenreController> logger = logger;
         private readonly IUnitOfWork unitOfWork = unitOfWork;
         private readonly IMapper mapper = mapper;
 
