@@ -1,46 +1,72 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MoviesApi.Data;
+using MoviesApi.DTOs;
+using MoviesApi.DTOs.Genre;
+using MoviesApi.Entities;
 using MoviesApi.Repository.Interfaces;
 
 namespace MoviesApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GenreController(ILogger<GenreController> logger, IUnitOfWork unitOfWork) : ControllerBase
+    public class GenreController(ILogger<GenreController> logger,
+        IUnitOfWork unitOfWork, IMapper mapper) : ControllerBase
     {
         private readonly ILogger<GenreController> logger = logger;
         private readonly IUnitOfWork unitOfWork = unitOfWork;
+        private readonly IMapper mapper = mapper;
 
         [HttpGet]
         public async Task<IActionResult> Get()
         {
             logger.LogInformation("Getting all the genres");
-            var gners = await unitOfWork.Genre.GetAll();
-            return Ok(gners);
+            var genres = await unitOfWork.Genre.GetAll();
+            var genresDTO = mapper.Map<IEnumerable<Genre>>(genres);
+            return Ok(genresDTO);
         }
         [HttpGet("{id}")]
-        public IActionResult GetById(int id)
+        public async Task<IActionResult> GetById(int id)
         {
-            throw new NotImplementedException();
-
+            if(!(unitOfWork.Genre.ObjectExistAsync(u => u.Id == id).GetAwaiter().GetResult()))
+            {
+                return NotFound("Genre not found");
+            }
+            var genre = await unitOfWork.Genre.GetAsync(u => u.Id == id);
+            return Ok(genre);
         }
-        [HttpPost]
-        public IActionResult Post()
+        [HttpPost("addGenre")]
+        public async Task<IActionResult> Post([FromBody] CreateGenreDTO genreDTO)
         {
-            throw new NotImplementedException();
-
+            var genre = 
+           await unitOfWork.Genre.CreatedAsync(genre);
+            await unitOfWork.SaveAsync();
+            return NoContent();
         }
-        [HttpPut]
-        public IActionResult Put()
+        [HttpPut("updateGenre")]
+        public async Task<IActionResult> Put([FromBody] Genre genre)
         {
-            throw new NotImplementedException();
-
+            if (!(unitOfWork.Genre.ObjectExistAsync(u => u.Id == genre.Id).GetAwaiter().GetResult()))
+            {
+                return NotFound("Genre not found");
+            }
+             unitOfWork.Genre.Update(genre);
+            await unitOfWork.SaveAsync();
+            return NoContent();
         }
-        [HttpDelete]
-        public IActionResult Delete()
+        [HttpDelete("delete{id}")]
+        public async Task<IActionResult> Delete(int id)
         {
-            throw new NotImplementedException();
+            if (!(unitOfWork.Genre.ObjectExistAsync(u => u.Id == id).GetAwaiter().GetResult()))
+            {
+                return NotFound("Genre not found");
+            }
+            var genreToBeDeleted = await unitOfWork.Genre.GetAsync(u => u.Id == id);
+
+            unitOfWork.Genre.Delete(genreToBeDeleted);
+            await unitOfWork.SaveAsync();
+            return NoContent(); 
         }
     }
 }
