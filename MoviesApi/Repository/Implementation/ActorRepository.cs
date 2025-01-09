@@ -5,14 +5,9 @@ using System.Linq.Expressions;
 
 namespace MoviesApi.Repository.Implementation
 {
-    public class ActorRepository : Repository<Actor> ,  IActorRepository
+    public class ActorRepository(AppDbContext db) : Repository<Actor>(db) ,  IActorRepository
     {
-        private readonly AppDbContext db;
-
-        public ActorRepository(AppDbContext db) : base(db)
-        {
-            this.db = db;
-        }
+        private readonly AppDbContext db = db;
 
         public void Update(Actor entity)
         {

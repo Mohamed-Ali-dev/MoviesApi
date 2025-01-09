@@ -37,7 +37,7 @@ namespace MoviesApi.Controllers
             return Ok(genreDTO);
         }
         [HttpPost("addGenre")]
-        public async Task<IActionResult> Post([FromBody] CreateGenreDTO genreDTO)
+        public async Task<IActionResult> Create([FromBody] CreateGenreDTO genreDTO)
         {
             var genre = mapper.Map<Genre>(genreDTO);
             if(!(unitOfWork.Genre.ObjectExistAsync(u =>u.Name == genreDTO.Name).GetAwaiter().GetResult()))
@@ -49,7 +49,7 @@ namespace MoviesApi.Controllers
             return NoContent();
         }
         [HttpPut("updateGenre")]
-        public async Task<IActionResult> Put(int id, [FromBody] CreateGenreDTO genreDTO)
+        public async Task<IActionResult> Update(int id, [FromBody] CreateGenreDTO genreDTO)
         {
              var genre = await unitOfWork.Genre.GetAsync(u => u.Id == id, tracked : true);
             if (!(unitOfWork.Genre.ObjectExistAsync(u => u.Name == genreDTO.Name).GetAwaiter().GetResult()))

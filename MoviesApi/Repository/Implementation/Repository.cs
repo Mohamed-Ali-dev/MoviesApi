@@ -19,7 +19,7 @@ namespace MoviesApi.Repository.Implementation
             this._db = db;
             this.dbSet = _db.Set<T>();
         }
-        public async Task<IEnumerable<T>> GetAll(PaginationDTO paginationDTO, Expression<Func<T, bool>>? filter = null, string[]? includeProperties = null, Expression<Func<T, bool>>? orderBy = null, bool? isDescending = false)
+        public async Task<IEnumerable<T>> GetAll(PaginationDTO paginationDTO, Expression<Func<T, bool>>? filter = null, string[]? includeProperties = null, Expression<Func<T, object>>? orderBy = null, bool? isDescending = false)
         {
             IQueryable<T> query = dbSet;
             if(filter != null)

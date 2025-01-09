@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using MoviesApi.Validations;
+using System.ComponentModel.DataAnnotations;
 
 namespace MoviesApi.DTOs.Actor
 {
@@ -7,8 +8,10 @@ namespace MoviesApi.DTOs.Actor
         [Required]
         [StringLength(120)]
         public string Name { get; set; }
-        public DateTime DateOfBirth { get; set; }
+        public DateOnly DateOfBirth { get; set; }
         public string Biography { get; set; }
-        //public string Picture { get; set; }
+        [FileValidationAttributeAllowedExtensions([".jpg", ".jpeg", ".png", ".gif"])]
+        [FileValidationAttributeMaxSize(2 * 1024 * 1024)]
+        public IFormFile? Picture { get; set; }
     }
 }

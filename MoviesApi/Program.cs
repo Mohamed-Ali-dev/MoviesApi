@@ -5,6 +5,7 @@ using MoviesApi.Filter;
 using MoviesApi.Helpers;
 using MoviesApi.Repository.Implementation;
 using MoviesApi.Repository.Interfaces;
+using MoviesApi.Services;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -29,6 +30,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(connectionString);
 });
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IFileStorageService, InAppStorageService>();
+builder.Services.AddHttpContextAccessor();
 //builder.Services.AddCors();
 try
 {
@@ -54,7 +57,7 @@ app.UseHttpsRedirection();
             Log.Logger.Error(exception, "Unhandled exception occurred");
         });
     });
-
+    app.UseStaticFiles();
     app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
