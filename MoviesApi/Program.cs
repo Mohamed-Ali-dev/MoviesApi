@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using MoviesApi.Data;
@@ -6,6 +7,8 @@ using MoviesApi.Helpers;
 using MoviesApi.Repository.Implementation;
 using MoviesApi.Repository.Interfaces;
 using MoviesApi.Services;
+using NetTopologySuite;
+using NetTopologySuite.Geometries;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,14 +24,24 @@ builder.Services.AddControllers(options =>
 {
     options.Filters.Add(typeof(ExceptionFilter));
 });
-builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    options.UseSqlServer(connectionString);
+    options.UseSqlServer((connectionString),
+    sqlOptions => sqlOptions.UseNetTopologySuite());
 });
+builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
+
+builder.Services.AddSingleton(provider => new MapperConfiguration(config =>
+{
+    var geometryFactory = provider.GetRequiredService<GeometryFactory>();
+    config.AddProfile(new AutoMapperProfiles(geometryFactory));
+}).CreateMapper());
+
+builder.Services.AddSingleton<GeometryFactory>(NtsGeometryServices
+    .Instance.CreateGeometryFactory(srid: 4326));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IFileStorageService, InAppStorageService>();
 builder.Services.AddHttpContextAccessor();

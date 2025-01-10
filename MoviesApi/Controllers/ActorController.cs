@@ -64,7 +64,7 @@ namespace MoviesApi.Controllers
         [HttpPut("{id:int}")]
         public async Task<IActionResult> Update(int id, [FromForm] CreateActorDTO actorDTO)
         {
-            var actor = await unitOfWork.Actor.GetAsync(u => u.Id == id);
+            var actor = await unitOfWork.Actor.GetAsync(u => u.Id == id, tracked:true);
             if (actor == null)
             {
                 return NotFound("Actor Not found");
