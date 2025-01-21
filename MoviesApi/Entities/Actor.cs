@@ -11,5 +11,6 @@ namespace MoviesApi.Entities
         public DateOnly DateOfBirth { get; set; }
         public string Biography { get; set; }
         public string Picture { get; set; }
+        public ICollection<MovieActors> MovieActors { get; set; }
     }
 }
