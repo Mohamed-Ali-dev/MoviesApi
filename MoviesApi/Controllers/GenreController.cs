@@ -24,6 +24,14 @@ namespace MoviesApi.Controllers
             var genresDTO = mapper.Map<IEnumerable<GenreDTO>>(genres);
             return Ok(genresDTO);
         }
+        [HttpGet("All")]
+        public async Task<IActionResult> Get()
+        {
+            var genres = await unitOfWork.Genre.GetAll(null, orderBy: x => x.Name);
+            var genresDTO = mapper.Map<IEnumerable<GenreDTO>>(genres);
+            return Ok(genresDTO);
+        }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
