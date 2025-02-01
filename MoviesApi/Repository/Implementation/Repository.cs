@@ -19,7 +19,7 @@ namespace MoviesApi.Repository.Implementation
             this._db = db;
             this.dbSet = _db.Set<T>();
         }
-        public async Task<IEnumerable<T>> GetAll(PaginationDTO paginationDTO, Expression<Func<T, bool>>? filter = null, string[]? includeProperties = null, Expression<Func<T, object>>? orderBy = null, bool? isDescending = false)
+        public async Task<IEnumerable<T>> GetAll(PaginationDTO? paginationDTO, Expression<Func<T, bool>>? filter = null, string[]? includeProperties = null, Expression<Func<T, object>>? orderBy = null, bool? isDescending = false)
         {
             IQueryable<T> query = dbSet;
             if(filter != null)
@@ -37,8 +37,15 @@ namespace MoviesApi.Repository.Implementation
                     query = query.Include(IncludeProp);
                 }
             }
-            return await query.Skip((paginationDTO.Page - 1) * paginationDTO.PageSize).
-               Take(paginationDTO.PageSize).ToListAsync();
+            if (paginationDTO != null)
+            {
+                return await query.Skip((paginationDTO.Page - 1) * paginationDTO.PageSize).
+                   Take(paginationDTO.PageSize).ToListAsync();
+            }
+            else
+            {
+                return await query.ToListAsync();
+            }
         }
         public async Task<T> GetAsync(Expression<Func<T, bool>> filter, string[]? includeProperties = null, bool tracked = false)
         {
@@ -55,9 +62,9 @@ namespace MoviesApi.Repository.Implementation
 
             if (includeProperties != null)
             {
-                foreach (var includeprop in includeProperties)
+                foreach (var includeProp in includeProperties)
                 {
-                    query = query.Include(includeprop);
+                    query = query.Include(includeProp);
                 }
             }
             return await query.FirstOrDefaultAsync();

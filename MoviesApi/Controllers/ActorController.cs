@@ -42,6 +42,12 @@ namespace MoviesApi.Controllers
             var actorDTO = mapper.Map<ActorDTO>(actor);
             return Ok(actorDTO);
         }
+        [HttpGet("SearchByName/{name}")]
+        public async Task<IActionResult> GetByName(string name)
+        {
+            if (string.IsNullOrEmpty(name)) { return Ok(new List<ActorsMovieDTO>());}
+            return Ok(await unitOfWork.Actor.GetActorsMovie(x => x.Name.Contains(name), orderBy:a => a.Name));
+        }
         [HttpPost]
         public async Task<IActionResult> Create([FromForm] CreateActorDTO actorDTO)
         {

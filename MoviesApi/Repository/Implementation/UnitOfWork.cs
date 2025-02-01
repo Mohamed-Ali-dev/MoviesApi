@@ -10,12 +10,15 @@ namespace MoviesApi.Repository.Implementation
         public IGenreRepository Genre { get; private set; }
         public IActorRepository Actor { get; private set; }
         public IMovieTheaterRepository MovieTheater { get; private set; }
+        public IMovieRepository Movie { get; private set; }
+
         public UnitOfWork(AppDbContext db)
         {
             _db = db;
             Genre = new GenreRepository(_db);
             Actor = new ActorRepository(_db);
             MovieTheater = new MovieTheaterRepository(_db);
+            Movie = new MovieRepository(_db);
         }
         public async Task SaveAsync()
         {
