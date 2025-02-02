@@ -6,6 +6,7 @@
         IActorRepository Actor { get; } 
         IMovieTheaterRepository MovieTheater { get; }
         IMovieRepository Movie { get; }
+        IRatingRepository Rating { get; }
         Task SaveAsync();
     }
 }

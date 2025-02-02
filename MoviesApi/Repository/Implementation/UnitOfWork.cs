@@ -11,6 +11,7 @@ namespace MoviesApi.Repository.Implementation
         public IActorRepository Actor { get; private set; }
         public IMovieTheaterRepository MovieTheater { get; private set; }
         public IMovieRepository Movie { get; private set; }
+        public IRatingRepository Rating { get; private set; }
 
         public UnitOfWork(AppDbContext db)
         {
@@ -19,6 +20,7 @@ namespace MoviesApi.Repository.Implementation
             Actor = new ActorRepository(_db);
             MovieTheater = new MovieTheaterRepository(_db);
             Movie = new MovieRepository(_db);
+            Rating = new RatingRepository(_db);
         }
         public async Task SaveAsync()
         {
