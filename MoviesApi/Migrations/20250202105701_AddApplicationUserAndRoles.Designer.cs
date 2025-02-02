@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MoviesApi.Data;
 using NetTopologySuite.Geometries;
@@ -12,9 +13,11 @@ using NetTopologySuite.Geometries;
 namespace MoviesApi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250202105701_AddApplicationUserAndRoles")]
+    partial class AddApplicationUserAndRoles
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -52,13 +55,13 @@ namespace MoviesApi.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "af182f45-f70a-451b-9d10-00acb3560436",
+                            Id = "f27d83e6-ed5d-42ec-becb-3c985b15def1",
                             Name = "User",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "c89412a2-1949-4afb-94b2-feca3f5a7366",
+                            Id = "0379603b-b559-4e2c-83b1-b610635df98c",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -403,33 +406,6 @@ namespace MoviesApi.Migrations
                     b.ToTable("MovieTheaterMovies");
                 });
 
-            modelBuilder.Entity("MoviesApi.Entities.Rating", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("MovieId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Rate")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MovieId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Ratings");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -536,25 +512,6 @@ namespace MoviesApi.Migrations
                     b.Navigation("Movie");
 
                     b.Navigation("MovieTheater");
-                });
-
-            modelBuilder.Entity("MoviesApi.Entities.Rating", b =>
-                {
-                    b.HasOne("MoviesApi.Entities.Movie", "Movie")
-                        .WithMany()
-                        .HasForeignKey("MovieId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MoviesApi.Entities.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Movie");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("MoviesApi.Entities.Actor", b =>
