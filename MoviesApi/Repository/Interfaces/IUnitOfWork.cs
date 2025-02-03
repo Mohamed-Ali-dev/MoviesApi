@@ -7,6 +7,7 @@
         IMovieTheaterRepository MovieTheater { get; }
         IMovieRepository Movie { get; }
         IRatingRepository Rating { get; }
+        IApplicationUserRepository ApplicationUser { get; }
         Task SaveAsync();
     }
 }

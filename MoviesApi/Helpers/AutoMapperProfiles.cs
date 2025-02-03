@@ -3,6 +3,7 @@ using MoviesApi.DTOs.Actor;
 using MoviesApi.DTOs.Genre;
 using MoviesApi.DTOs.Movie;
 using MoviesApi.DTOs.MovieTheater;
+using MoviesApi.DTOs.User;
 using MoviesApi.Entities;
 using NetTopologySuite.Geometries;
 
@@ -39,6 +40,8 @@ namespace MoviesApi.Helpers
                 .ForMember(x => x.MovieGenres, options => options.MapFrom(MapMoviesGenres))
                 .ForMember(x =>x.MovieTheaterMovies, options => options.MapFrom(MapMovieTheaterMovies))
                 .ForMember(x => x.MovieActors, options => options.MapFrom(MapMovieActors));
+
+            CreateMap<ApplicationUser, UserDTO>();
         }
         private List<GenreDTO> MapMoviesGenres(Movie movie, MovieDTO movieDTO)
         {

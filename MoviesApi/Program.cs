@@ -12,6 +12,7 @@ using MoviesApi.Helpers;
 using MoviesApi.Repository.Implementation;
 using MoviesApi.Repository.Interfaces;
 using MoviesApi.Services;
+using MoviesApi.Services.Authentication;
 using MoviesApi.Utiltity;
 using NetTopologySuite;
 using NetTopologySuite.Geometries;
@@ -71,6 +72,7 @@ builder.Services.AddSingleton<GeometryFactory>(NtsGeometryServices
     .Instance.CreateGeometryFactory(srid: 4326));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IFileStorageService, InAppStorageService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddHttpContextAccessor();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

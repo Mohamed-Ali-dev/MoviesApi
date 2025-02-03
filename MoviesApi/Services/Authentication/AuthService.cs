@@ -14,10 +14,6 @@ namespace MoviesApi.Services.Authentication
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly JwtOptions _jwtOptions;
-        public AuthService()
-        {
-        }
-
         public AuthService(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, JwtOptions jwtOptions)
         {
             _userManager = userManager;
@@ -33,6 +29,7 @@ namespace MoviesApi.Services.Authentication
             var user = new ApplicationUser
             {
                 Email = registerDTO.Email,
+                UserName = registerDTO.Email,
                 FirstName = registerDTO.FirstName,
                 LastName = registerDTO.LastName,
                 PhoneNumber = registerDTO.PhoneNumber,
