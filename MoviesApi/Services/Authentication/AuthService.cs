@@ -9,17 +9,11 @@ using System.Text;
 
 namespace MoviesApi.Services.Authentication
 {
-    public class AuthService : IAuthService
+    public class AuthService(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, JwtOptions jwtOptions) : IAuthService
     {
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly JwtOptions _jwtOptions;
-        public AuthService(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, JwtOptions jwtOptions)
-        {
-            _userManager = userManager;
-            _roleManager = roleManager;
-            _jwtOptions = jwtOptions;
-        }
+        private readonly UserManager<ApplicationUser> _userManager = userManager;
+        private readonly RoleManager<IdentityRole> _roleManager = roleManager;
+        private readonly JwtOptions _jwtOptions = jwtOptions;
 
         public async Task<AuthDTO> RegisterAsync(RegisterDTO registerDTO)
         {
@@ -75,7 +69,26 @@ namespace MoviesApi.Services.Authentication
 
             return authDTO;
         }
-
+        public async Task<string> MakeAdmin(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (userId is null)
+                return "Invalid userId";
+            if (await _userManager.IsInRoleAsync(user, SD.Role_Admin))
+                return "User is already an admin";
+            var result = await _userManager.AddToRoleAsync(user, SD.Role_Admin);
+            return result.Succeeded ? string.Empty : "Something went wrong";
+        }
+        public async Task<string> RemoveAdmin(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (userId is null)
+                return "Invalid userId";
+            if (!await _userManager.IsInRoleAsync(user, SD.Role_Admin))
+                return "User is not an admin";
+            var result = await _userManager.RemoveFromRoleAsync(user, SD.Role_Admin);
+            return result.Succeeded ? string.Empty : "Something went wrong";
+        }
         private async Task<JwtSecurityToken> CreateJwtToken(ApplicationUser user)
         {
             var userClaims = await _userManager.GetClaimsAsync(user);
@@ -105,5 +118,7 @@ namespace MoviesApi.Services.Authentication
                 signingCredentials: signingCredentials);
             return jwtSecurityToken;
         }
+
+      
     }
 }

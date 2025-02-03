@@ -53,5 +53,23 @@ namespace MoviesApi.Controllers
 
             return Ok(result);
         }
+        [HttpPost("makeAdmin")]
+        public async Task<IActionResult> MakeAdmin([FromBody] string userId)
+        {
+            var result = await _authService.MakeAdmin(userId);
+            if (!string.IsNullOrEmpty(result))
+                return BadRequest(result);
+
+            return NoContent();
+        }
+        [HttpPost("removeAdmin")]
+        public async Task<IActionResult> RemoveAdmin([FromBody] string userId)
+        {
+            var result = await _authService.RemoveAdmin(userId);
+            if (!string.IsNullOrEmpty(result))
+                return BadRequest(result);
+
+            return NoContent();
+        }
     }
 }

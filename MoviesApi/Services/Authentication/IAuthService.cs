@@ -6,6 +6,9 @@ namespace MoviesApi.Services.Authentication
     {
         Task<AuthDTO> RegisterAsync(RegisterDTO registerDTO);
         Task<AuthDTO> LoginAsync(LoginDTO loginDTO);
+        Task<string> MakeAdmin(string userId);
+        Task<string> RemoveAdmin(string userId);
+
 
     }
 }
