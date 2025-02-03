@@ -25,9 +25,6 @@ namespace MoviesApi.Controllers
         [Authorize]
         public async Task<IActionResult> AddRating([FromBody] RatingDTO ratingDTO)
         {
-            //var email = HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email).Value;
-            //var user = await userManager.FindByEmailAsync(email);
-            //var userId = user.Id;
             var claimsIdentity = User.Identity as ClaimsIdentity;
             var userId = claimsIdentity?.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "Anonymous";
             var currentRate = await unitOfWork.Rating.GetAsync(x => x.MovieId == ratingDTO.MovieId &&

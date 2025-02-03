@@ -9,11 +9,14 @@ using MoviesApi.Services;
 using MoviesApi.DTOs.MovieTheater;
 using MoviesApi.DTOs.Genre;
 using MoviesApi.Helpers;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace MoviesApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class MovieController(IUnitOfWork unitOfWork, IMapper mapper,
         IFileStorageService fileStorageService) : ControllerBase
     {
@@ -23,6 +26,7 @@ namespace MoviesApi.Controllers
 
 
         [HttpGet("filter")]
+        [AllowAnonymous]
         public async Task<IActionResult> Get([FromQuery] FilterMoviesDTO filterMoviesDTO)
         {
             var moviesFromDb = await unitOfWork.Movie.GetFilteredMovies(filterMoviesDTO, orderBy: x => x.Title);
@@ -31,6 +35,7 @@ namespace MoviesApi.Controllers
             return Ok(movies);
         }
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> Get()
         {
             var top = 6;
@@ -50,6 +55,7 @@ namespace MoviesApi.Controllers
 
         }
         [HttpGet("GetById{id}")]
+        [AllowAnonymous]
         public async Task<ActionResult<MovieDTO>> GetById(int id)
         {
             var Movie = await unitOfWork.Movie.GetMovieById(u => u.Id == id);
@@ -58,7 +64,29 @@ namespace MoviesApi.Controllers
             {
                 return NotFound("Movie not found");
             }
+            var averageVote = 0.0;
+            var userVote = 0;
+            if(await unitOfWork.Rating.ObjectExistAsync(x => x.MovieId == id))
+            {
+                averageVote = await unitOfWork.Rating.
+                    GetAverage(x => x.MovieId == id, x => x.Rate);
+                if (HttpContext.User.Identity.IsAuthenticated)
+                {
+                    var claimsIdentity = User.Identity as ClaimsIdentity;
+                    var userId = claimsIdentity?.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "Anonymous";
+                    var ratingDb = await unitOfWork.Rating.GetAsync(x => x.MovieId == id 
+                    && x.UserId == userId);
+
+                    if(ratingDb != null)
+                    {
+                        userVote = ratingDb.Rate;
+                    }
+                }
+            }
+            
             var movieDTO = mapper.Map<MovieDTO>(Movie);
+            movieDTO.AverageVote = averageVote;
+            movieDTO.UserVote = userVote;
             movieDTO.Actors = movieDTO.Actors.OrderBy(x => x.Order).ToList();
             return movieDTO;
         }
