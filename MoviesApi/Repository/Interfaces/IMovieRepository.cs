@@ -10,6 +10,5 @@ namespace MoviesApi.Repository.Interfaces
             Expression<Func<Movie, object>>? orderBy = null, bool? isDescending = false);
         Task<IEnumerable<Movie>> GetAllMovies(PaginationDTO? paginationDTO, Expression<Func<Movie, bool>>? filter = null, Expression<Func<Movie, object>>? orderBy = null, bool? isDescending = false);
         Task<Movie> GetMovieById(Expression<Func<Movie, bool>> filter, bool tracked = false);
-        void Update(Movie movie);
     }
 }

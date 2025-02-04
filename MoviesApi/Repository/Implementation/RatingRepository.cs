@@ -22,10 +22,5 @@ namespace MoviesApi.Repository.Implementation
             return averageVote;
             
         }
-
-        public void Update(Rating rating)
-        {
-            _db.Ratings.Update(rating);
-        }
     }
 }

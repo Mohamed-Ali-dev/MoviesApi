@@ -9,6 +9,5 @@ namespace MoviesApi.Repository.Interfaces
     {
         Task<IEnumerable<ActorsMovieDTO>> GetActorsMovie(Expression<Func<Actor, bool>>? filter = null, string[]? includeProperties = null
             , Expression<Func<Actor, object>>? orderBy = null, bool? isDescending = false);
-        void Update(Actor entity);
     }
 }

@@ -5,18 +5,7 @@ using System.Linq.Expressions;
 
 namespace MoviesApi.Repository.Implementation
 {
-    public class GenreRepository :Repository<Genre> ,  IGenreRepository
+    public class GenreRepository(AppDbContext db) : Repository<Genre>(db) ,  IGenreRepository
     {
-        private readonly AppDbContext db;
-
-        public GenreRepository(AppDbContext db) : base(db)
-        {
-            this.db = db;
-        }
-
-        public void Update(Genre entity)
-        {
-           db.Update(entity);   
-        }
     }
 }

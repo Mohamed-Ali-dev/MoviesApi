@@ -8,14 +8,10 @@ using System.Linq.Expressions;
 
 namespace MoviesApi.Repository.Implementation
 {
-    public class MovieRepository : Repository<Movie>, IMovieRepository
+    public class MovieRepository(AppDbContext db) : Repository<Movie>(db), IMovieRepository
     {
-        private readonly AppDbContext db;
+        private readonly AppDbContext db = db;
 
-        public MovieRepository(AppDbContext db) : base(db) 
-        {
-            this.db = db;
-        }
         public async Task<IEnumerable<Movie>> GetFilteredMovies(FilterMoviesDTO filterMoviesDTO,
             Expression<Func<Movie, object>>? orderBy = null, bool? isDescending = false)
         {
@@ -88,10 +84,6 @@ namespace MoviesApi.Repository.Implementation
 
           
             return await query.FirstOrDefaultAsync();
-        }
-        public void Update(Movie movie)
-        {
-            db.Update(movie);
         }
     }
 }

@@ -34,10 +34,5 @@ namespace MoviesApi.Repository.Implementation
             return await query.Select(x => new ActorsMovieDTO { Id = x.Id, Name = x.Name , Picture = x.Picture})
                 .Take(5).ToListAsync();
         }
-
-        public void Update(Actor entity)
-        {
-           db.Update(entity);   
-        }
     }
 }

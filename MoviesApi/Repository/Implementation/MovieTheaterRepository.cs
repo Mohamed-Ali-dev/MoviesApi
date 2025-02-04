@@ -7,11 +7,5 @@ namespace MoviesApi.Repository.Implementation
 {
     public class MovieTheaterRepository(AppDbContext db) : Repository<MovieTheater>(db) , IMovieTheaterRepository
     {
-        private readonly AppDbContext db = db;
-
-        public void Update(MovieTheater entity)
-        {
-           db.Update(entity);   
-        }
     }
 }

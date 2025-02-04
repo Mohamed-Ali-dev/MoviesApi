@@ -1,6 +1,4 @@
 ﻿using AutoMapper;
-using AutoMapper.Configuration;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MoviesApi.DTOs;
 using MoviesApi.DTOs.Actor;

@@ -1,14 +1,10 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 using MoviesApi.DTOs;
 using MoviesApi.DTOs.Identity;
 using MoviesApi.DTOs.User;
 using MoviesApi.Repository.Interfaces;
 using MoviesApi.Services.Authentication;
-using RTools_NTS.Util;
-using System.Diagnostics;
 
 namespace MoviesApi.Controllers
 {

@@ -1,11 +1,8 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MoviesApi.Data;
 using MoviesApi.DTOs;
 using MoviesApi.DTOs.Genre;
 using MoviesApi.Entities;
-using MoviesApi.Helpers;
 using MoviesApi.Repository.Interfaces;
 
 namespace MoviesApi.Controllers

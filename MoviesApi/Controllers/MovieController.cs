@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MoviesApi.DTOs.Movie;
 using MoviesApi.DTOs;
@@ -8,7 +7,6 @@ using MoviesApi.Repository.Interfaces;
 using MoviesApi.Services;
 using MoviesApi.DTOs.MovieTheater;
 using MoviesApi.DTOs.Genre;
-using MoviesApi.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 
