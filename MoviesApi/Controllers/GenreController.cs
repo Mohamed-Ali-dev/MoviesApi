@@ -1,14 +1,18 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MoviesApi.DTOs;
 using MoviesApi.DTOs.Genre;
 using MoviesApi.Entities;
 using MoviesApi.Repository.Interfaces;
+using MoviesApi.Utiltity;
 
 namespace MoviesApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
+
     public class GenreController(IUnitOfWork unitOfWork, IMapper mapper) : ControllerBase
     {
         private readonly IUnitOfWork unitOfWork = unitOfWork;
@@ -42,6 +46,7 @@ namespace MoviesApi.Controllers
             return Ok(genreDTO);
         }
         [HttpPost("addGenre")]
+        [Authorize(Roles = SD.Role_Admin)]
         public async Task<IActionResult> Create([FromBody] CreateGenreDTO genreDTO)
         {
             var genre = mapper.Map<Genre>(genreDTO);
@@ -54,6 +59,7 @@ namespace MoviesApi.Controllers
             return NoContent();
         }
         [HttpPut("updateGenre")]
+        [Authorize(Roles = SD.Role_Admin)]
         public async Task<IActionResult> Update(int id, [FromBody] CreateGenreDTO genreDTO)
         {
              var genre = await unitOfWork.Genre.GetAsync(u => u.Id == id, tracked : true);
@@ -70,6 +76,7 @@ namespace MoviesApi.Controllers
             return NoContent();
         }
         [HttpDelete("delete{id:int}")]
+        [Authorize(Roles = SD.Role_Admin)]
         public async Task<IActionResult> Delete(int id)
         {
             var genreToBeDeleted = await unitOfWork.Genre.GetAsync(u => u.Id == id);

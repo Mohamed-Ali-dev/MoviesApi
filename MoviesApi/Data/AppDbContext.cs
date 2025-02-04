@@ -81,6 +81,41 @@ namespace MoviesApi.Data
                 .HasForeignKey(mg => mg.ActorId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            // Seed Genres
+            modelBuilder.Entity<Genre>().HasData(
+                new Genre { Id = 1, Name = "Drama" },
+                new Genre { Id = 2, Name = "Action" },
+                new Genre { Id = 3, Name = "Romance" },
+                new Genre { Id = 4, Name = "Comedy" },
+                new Genre { Id = 5, Name = "Horror" }
+            );
+            // Seed Actors
+            modelBuilder.Entity<Actor>().HasData(
+              new Actor
+              {
+                  Id = 1,
+                  Name = "Leonardo DiCaprio",
+                  DateOfBirth = new DateOnly(1974, 11, 11),
+                  Biography = "An American actor and film producer, known for his diverse roles and dedication to his craft.",
+                  Picture = ""
+              },
+              new Actor
+              {
+                  Id = 2,
+                  Name = "Kate Winslet",
+                  DateOfBirth = new DateOnly(1975, 10, 5),
+                  Biography = "An English actress known for her roles in dramatic films.",
+                  Picture = ""
+              },
+              new Actor
+              {
+                  Id = 3,
+                  Name = "Brad Pitt",
+                  DateOfBirth = new DateOnly(1963, 12, 18),
+                  Biography = "An American actor and film producer, noted for his charismatic screen presence.",
+                  Picture = ""
+              }
+          );
         }
     }
 }

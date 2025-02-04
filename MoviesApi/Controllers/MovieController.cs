@@ -9,6 +9,7 @@ using MoviesApi.DTOs.MovieTheater;
 using MoviesApi.DTOs.Genre;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using MoviesApi.Utiltity;
 
 namespace MoviesApi.Controllers
 {
@@ -24,7 +25,7 @@ namespace MoviesApi.Controllers
 
 
         [HttpGet("filter")]
-        [AllowAnonymous]
+        [Authorize]
         public async Task<IActionResult> Get([FromQuery] FilterMoviesDTO filterMoviesDTO)
         {
             var moviesFromDb = await unitOfWork.Movie.GetFilteredMovies(filterMoviesDTO, orderBy: x => x.Title);
@@ -33,7 +34,6 @@ namespace MoviesApi.Controllers
             return Ok(movies);
         }
         [HttpGet]
-        [AllowAnonymous]
         public async Task<IActionResult> Get()
         {
             var top = 6;
@@ -53,7 +53,6 @@ namespace MoviesApi.Controllers
 
         }
         [HttpGet("GetById{id}")]
-        [AllowAnonymous]
         public async Task<ActionResult<MovieDTO>> GetById(int id)
         {
             var Movie = await unitOfWork.Movie.GetMovieById(u => u.Id == id);
@@ -134,6 +133,7 @@ namespace MoviesApi.Controllers
         }
       
         [HttpPost("addMovie")]
+        [Authorize(Roles = SD.Role_Admin)]
         public async Task<IActionResult> Create([FromForm] CreateMovieDTO createMovieDTO)
         {
             foreach (var GenreId in createMovieDTO.GenresIds)
@@ -166,6 +166,7 @@ namespace MoviesApi.Controllers
           
         }
         [HttpPut("updateMovie")]
+        [Authorize(Roles = SD.Role_Admin)]
         public async Task<IActionResult> Update(int id, [FromForm] CreateMovieDTO createMovieDTO)
         {
             var movie = await unitOfWork.Movie.GetAsync(u => u.Id == id, new[] { "MovieGenres", "MovieTheaterMovies", "MovieActors" }, tracked: true);
@@ -189,6 +190,7 @@ namespace MoviesApi.Controllers
             return NoContent();
         }
         [HttpDelete("{id:int}")]
+        [Authorize(Roles = SD.Role_Admin)]
         public async Task<IActionResult> Delete(int id)
         {
             var movieToBeDeleted = await unitOfWork.Movie.GetAsync(u => u.Id == id);

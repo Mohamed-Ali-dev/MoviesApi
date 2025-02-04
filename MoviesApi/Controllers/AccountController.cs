@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MoviesApi.DTOs;
 using MoviesApi.DTOs.Identity;
 using MoviesApi.DTOs.User;
 using MoviesApi.Repository.Interfaces;
 using MoviesApi.Services.Authentication;
+using MoviesApi.Utiltity;
 
 namespace MoviesApi.Controllers
 {
@@ -12,16 +14,16 @@ namespace MoviesApi.Controllers
     [ApiController]
     public class AccountController(IAuthService authService, IUnitOfWork unitOfWork, IMapper mapper) : ControllerBase
     {
-        private readonly IAuthService _authService = authService;
-        private readonly IUnitOfWork _unitOfWork = unitOfWork;
-        private readonly IMapper _mapper = mapper;
+        private readonly IAuthService authService = authService;
+        private readonly IUnitOfWork unitOfWork = unitOfWork;
+        private readonly IMapper mapper = mapper;
 
         [HttpGet("listUsers")]
         public async Task<IActionResult> GetListUsers([FromQuery] PaginationDTO paginationDTO)
         {
-            var users = await _unitOfWork.ApplicationUser.GetAll(paginationDTO, orderBy: x => x.Email);
+            var users = await unitOfWork.ApplicationUser.GetAll(paginationDTO, orderBy: x => x.Email);
 
-            var usersDTO = _mapper.Map<List<UserDTO>>(users);
+            var usersDTO = mapper.Map<List<UserDTO>>(users);
             return Ok(usersDTO);
         }
         [HttpPost("register")]
@@ -30,7 +32,7 @@ namespace MoviesApi.Controllers
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var result = await _authService.RegisterAsync(registerDTO);
+            var result = await authService.RegisterAsync(registerDTO);
 
             if (!result.IsAuthenticated)
                 return BadRequest(result.Message);
@@ -45,7 +47,7 @@ namespace MoviesApi.Controllers
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            var result = await _authService.LoginAsync(loginDTO);
+            var result = await authService.LoginAsync(loginDTO);
 
             if (!result.IsAuthenticated) 
                 return BadRequest(result.Message);
@@ -55,18 +57,20 @@ namespace MoviesApi.Controllers
             return Ok(result);
         }
         [HttpPost("makeAdmin")]
+        //[Authorize(Roles = SD.Role_Admin)]
         public async Task<IActionResult> MakeAdmin([FromBody] string userId)
         {
-            var result = await _authService.MakeAdmin(userId);
+            var result = await authService.MakeAdmin(userId);
             if (!string.IsNullOrEmpty(result))
                 return BadRequest(result);
 
             return NoContent();
         }
         [HttpPost("removeAdmin")]
+        [Authorize(Roles = SD.Role_Admin)]
         public async Task<IActionResult> RemoveAdmin([FromBody] string userId)
         {
-            var result = await _authService.RemoveAdmin(userId);
+            var result = await authService.RemoveAdmin(userId);
             if (!string.IsNullOrEmpty(result))
                 return BadRequest(result);
 
@@ -78,7 +82,7 @@ namespace MoviesApi.Controllers
             var refreshToken = Request.Cookies["refreshToken"];
             if (string.IsNullOrEmpty(refreshToken))
                 return BadRequest("Invalid token");
-            var result = await _authService.RefreshTokenAsync(refreshToken);
+            var result = await authService.RefreshTokenAsync(refreshToken);
 
             if(!result.IsAuthenticated)
                 return BadRequest(result.Message);
@@ -93,7 +97,7 @@ namespace MoviesApi.Controllers
             if (string.IsNullOrEmpty(token))
                 return BadRequest("Invalid token");
 
-            var result = await _authService.RevokeTokenAsync(token);
+            var result = await authService.RevokeTokenAsync(token);
             if (!result)
                 return BadRequest("Invalid Token");
             return Ok();

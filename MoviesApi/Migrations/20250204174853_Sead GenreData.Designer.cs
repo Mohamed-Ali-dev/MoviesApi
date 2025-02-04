@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MoviesApi.Data;
 using NetTopologySuite.Geometries;
@@ -12,9 +13,11 @@ using NetTopologySuite.Geometries;
 namespace MoviesApi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250204174853_Sead GenreData")]
+    partial class SeadGenreData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -52,13 +55,13 @@ namespace MoviesApi.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "55288671-df33-47c1-817c-91f546c7adba",
+                            Id = "d9af430b-34fb-413c-bd13-281952ee956c",
                             Name = "admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "79415083-c390-4f35-b519-39363e99fab3",
+                            Id = "baec89d5-b293-4d85-b020-53fa9f526ac1",
                             Name = "user",
                             NormalizedName = "USER"
                         });
@@ -197,32 +200,6 @@ namespace MoviesApi.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Actors");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Biography = "An American actor and film producer, known for his diverse roles and dedication to his craft.",
-                            DateOfBirth = new DateOnly(1974, 11, 11),
-                            Name = "Leonardo DiCaprio",
-                            Picture = ""
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Biography = "An English actress known for her roles in dramatic films.",
-                            DateOfBirth = new DateOnly(1975, 10, 5),
-                            Name = "Kate Winslet",
-                            Picture = ""
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Biography = "An American actor and film producer, noted for his charismatic screen presence.",
-                            DateOfBirth = new DateOnly(1963, 12, 18),
-                            Name = "Brad Pitt",
-                            Picture = ""
-                        });
                 });
 
             modelBuilder.Entity("MoviesApi.Entities.ApplicationUser", b =>

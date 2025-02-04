@@ -1,16 +1,17 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MoviesApi.DTOs.MovieTheater;
 using MoviesApi.DTOs;
 using MoviesApi.Entities;
 using MoviesApi.Repository.Interfaces;
-using MoviesApi.Services;
+using Microsoft.AspNetCore.Authorization;
+using MoviesApi.Utiltity;
 
 namespace MoviesApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class MovieTheaterController(IUnitOfWork unitOfWork, IMapper mapper) : ControllerBase
     {
         private readonly IUnitOfWork unitOfWork = unitOfWork;
@@ -39,6 +40,7 @@ namespace MoviesApi.Controllers
             return Ok(movieTheaterDTO);
         }
         [HttpPost]
+        [Authorize(Roles = SD.Role_Admin)]
         public async Task<IActionResult> Create([FromForm] CreateMovieTheaterDTO movieTheaterDTO)
         {
             if ((await unitOfWork.MovieTheater.ObjectExistAsync(a => a.Name == movieTheaterDTO.Name && a.Location.X == movieTheaterDTO.Longitude && a.Location.Y == movieTheaterDTO.Latitude)))
@@ -51,6 +53,7 @@ namespace MoviesApi.Controllers
             return NoContent();
         }
         [HttpPut("{id:int}")]
+        [Authorize(Roles = SD.Role_Admin)]
         public async Task<IActionResult> Update(int id, [FromForm] CreateMovieTheaterDTO movieTheaterDTO)
         {
             var movieTheater = await unitOfWork.MovieTheater.GetAsync(u => u.Id == id, tracked: true);
@@ -68,6 +71,7 @@ namespace MoviesApi.Controllers
             return NoContent();
         }
         [HttpDelete("delete{id:int}")]
+        [Authorize(Roles = SD.Role_Admin)]
         public async Task<IActionResult> Delete(int id)
         {
             var movieTheaterToBeDeleted = await unitOfWork.MovieTheater.GetAsync(u => u.Id == id);

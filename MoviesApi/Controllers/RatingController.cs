@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MoviesApi.DTOs.Rating;
@@ -11,18 +10,13 @@ namespace MoviesApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class RatingController : ControllerBase
-    {
-        private readonly IUnitOfWork unitOfWork;
-        private readonly UserManager<ApplicationUser> userManager;
+    [Authorize]
 
-        public RatingController(IUnitOfWork unitOfWork, UserManager<ApplicationUser> userManager)
-        {
-            this.unitOfWork = unitOfWork;
-            this.userManager = userManager;
-        }
+    public class RatingController(IUnitOfWork unitOfWork) : ControllerBase
+    {
+        private readonly IUnitOfWork unitOfWork = unitOfWork;
+
         [HttpPost]
-        [Authorize]
         public async Task<IActionResult> AddRating([FromBody] RatingDTO ratingDTO)
         {
             var claimsIdentity = User.Identity as ClaimsIdentity;
