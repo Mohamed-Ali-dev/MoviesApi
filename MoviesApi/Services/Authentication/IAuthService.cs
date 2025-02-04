@@ -8,6 +8,8 @@ namespace MoviesApi.Services.Authentication
         Task<AuthDTO> LoginAsync(LoginDTO loginDTO);
         Task<string> MakeAdmin(string userId);
         Task<string> RemoveAdmin(string userId);
+        Task<AuthDTO> RefreshTokenAsync(string token);
+        Task<bool> RevokeTokenAsync(string token);
 
 
     }

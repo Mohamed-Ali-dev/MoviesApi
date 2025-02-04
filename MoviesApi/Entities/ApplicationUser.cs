@@ -9,5 +9,6 @@ namespace MoviesApi.Entities
         public string FirstName { get; set; }
         [Required, MaxLength(50)]
         public string LastName { get; set; }
+        public ICollection<RefreshToken>? RefreshTokens { get; set; }
     }
 }
