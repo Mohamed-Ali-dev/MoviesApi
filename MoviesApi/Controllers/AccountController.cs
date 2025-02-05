@@ -19,6 +19,7 @@ namespace MoviesApi.Controllers
         private readonly IMapper mapper = mapper;
 
         [HttpGet("listUsers")]
+        [Authorize(Roles = SD.Role_Admin)]
         public async Task<IActionResult> GetListUsers([FromQuery] PaginationDTO paginationDTO)
         {
             var users = await unitOfWork.ApplicationUser.GetAll(paginationDTO, orderBy: x => x.Email);
@@ -57,7 +58,7 @@ namespace MoviesApi.Controllers
             return Ok(result);
         }
         [HttpPost("makeAdmin")]
-        //[Authorize(Roles = SD.Role_Admin)]
+        [Authorize(Roles = SD.Role_Admin)]
         public async Task<IActionResult> MakeAdmin([FromBody] string userId)
         {
             var result = await authService.MakeAdmin(userId);

@@ -170,10 +170,6 @@ namespace MoviesApi.Controllers
         public async Task<IActionResult> Update(int id, [FromForm] CreateMovieDTO createMovieDTO)
         {
             var movie = await unitOfWork.Movie.GetAsync(u => u.Id == id, new[] { "MovieGenres", "MovieTheaterMovies", "MovieActors" }, tracked: true);
-            if ((unitOfWork.Movie.ObjectExistAsync(u => u.Title == createMovieDTO.Title && u.Summary == createMovieDTO.Summary).GetAwaiter().GetResult()))
-            {
-                return BadRequest("Movie is already exist");
-            }
             if (movie == null)
             {
                 return NotFound("Movie not found");

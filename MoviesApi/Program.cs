@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MoviesApi.Data;
+using MoviesApi.DbInitializer;
 using MoviesApi.Entities;
 using MoviesApi.Filter;
 using MoviesApi.Helpers;
@@ -73,6 +74,7 @@ builder.Services.AddSingleton<GeometryFactory>(NtsGeometryServices
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IFileStorageService, InAppStorageService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IDbInitializer, DbInitializer>();
 builder.Services.AddHttpContextAccessor();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -108,14 +110,13 @@ try
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
+//if (app.Environment.IsDevelopment())
+//{
     app.UseSwagger();
     app.UseSwaggerUI();
-}
+//}
 
 app.UseHttpsRedirection();
-    //app.UseCors();
 
     app.UseExceptionHandler(errorApp =>
     {
@@ -126,14 +127,20 @@ app.UseHttpsRedirection();
             Log.Logger.Error(exception, "Unhandled exception occurred");
         });
     });
-    app.UseStaticFiles();
-    app.UseAuthentication();
+app.UseStaticFiles();
+app.UseAuthentication();
 app.UseAuthorization();
+    SeedDataBase();
 app.MapControllers();
 
     Log.Logger.Information("Application is running ....");
 app.Run();
-
+    void SeedDataBase()
+    {
+        using var scope = app.Services.CreateScope();
+        var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
+        dbInitializer.Initialize();
+    }
 }
 catch(Exception ex)
 {

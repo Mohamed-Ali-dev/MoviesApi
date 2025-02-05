@@ -80,11 +80,6 @@ namespace MoviesApi.Controllers
             {
                 return NotFound("Actor Not found");
             }
-            if ((await unitOfWork.Actor.ObjectExistAsync(a => a.Name == actorDTO.Name && a.DateOfBirth == actorDTO.DateOfBirth
-            && a.Biography == actorDTO.Biography)))
-            {
-                return BadRequest("Actor is already exist");
-            }
          
              actor = mapper.Map(actorDTO, actor);
             if (actorDTO.Picture != null)
